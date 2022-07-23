@@ -50,17 +50,6 @@ WIN = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT))
 
 pygame.display.set_caption("ColorCatcher")
 
-STAR = pygame.image.load('assets/star.png')
-# STAR = pygame.transform.scale(STAR, (WIDTH, HEIGHT))
-
-RHOMBUS = pygame.image.load('assets/rhombus.png')
-# RHOMBUS = pygame.transform.scale(RHOMBUS, (WIDTH, HEIGHT))
-
-SQUARE = pygame.image.load('assets/square.png')
-# SQUARE = pygame.transform.scale(SQUARE, (WIDTH, HEIGHT))
-
-PLAYER_PLATFORM = pygame.image.load('assets/player_platform.png')
-# PLAYER_PLATFORM = pygame.transform.scale(SQUARE, (WIDTH, HEIGHT))
 
 FPS = 60
 VEL = 5
@@ -95,16 +84,6 @@ score_count = 0
 
 time_stamp = round(time.time() * 1000)
 time_delta = round(random.randint(4000, 25000))
-
-
-def update_window(rect, rect_1, rect_3, rect_4, player_platform):
-    WIN.fill(WHITE)
-    WIN.blit(PLAYER_PLATFORM, (player_platform.x, player_platform.y))
-    WIN.blit(STAR, (rect.x, rect.y))
-    WIN.blit(SQUARE, (rect_1.x, rect_1.y))
-    WIN.blit(RHOMBUS, (rect_3.x, rect_3.y))
-    WIN.blit(SQUARE, (rect_4.x, rect_4.y))
-    pygame.display.update()
 
 
 def handle_movement_player(keys_pressed, player_platform):
@@ -166,8 +145,12 @@ def evaluate_object(object):
         score_count = score_count + 10
     elif player_platform.color == object.color:
         pygame.mixer.Sound('assets/correct-choice-43861.wav').play()
-        score_count = score_count + 1
-        print(score_count)
+        if object.type == Type.RHOMBUS:
+            score_count = score_count + 20
+        elif object.type == Type.SQUARE:
+            score_count = score_count + 15
+        elif object.type == Type.STAR:
+            score_count = score_count + 10
     else:
         pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
         live_count = live_count - 1
@@ -186,6 +169,7 @@ def reset_timer():
     ran_index = random.randint(0, len(images) - 1)
     player_platform.b_image = images[ran_index][0]
     player_platform.color = images[ran_index][2]
+
 
 def time_run_out():
     return round(time.time() * 1000) - time_delta > time_stamp
@@ -232,9 +216,7 @@ def main():
                 object = reassign_object(object)
             if check_detection(object):
                 evaluate_object(object)
-                print(object.type, object.color)
                 object = reassign_object(object)
-                print(object.type, object.color)
 
         if time_run_out():
             reset_timer()
