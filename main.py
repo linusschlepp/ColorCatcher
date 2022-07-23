@@ -93,6 +93,9 @@ player_platform = GameObject(images[ran_index][0], 4, random.randrange(0, MAX_WI
 
 score_count = 0
 
+time_stamp = round(time.time() * 1000)
+time_delta = round(random.randint(4000, 25000))
+
 
 def update_window(rect, rect_1, rect_3, rect_4, player_platform):
     WIN.fill(WHITE)
@@ -113,7 +116,7 @@ def handle_movement_player(keys_pressed, player_platform):
             player_platform.coord_x += VEL + 5
 
 
-def update_score(score_count):
+def update_score():
     font = pygame.font.SysFont('Consolas', 25)
     text = font.render("Score:" + str(score_count), True, BLACK)
     WIN.blit(text, (0, 0))
@@ -124,7 +127,7 @@ def text_objects(text, font):
     return text_surface, text_surface.get_rect()
 
 
-def update_lives(live_count):
+def update_lives():
     if live_count == 3:
         WIN.blit(pygame.image.load('assets/three_hearts.png'), (MAX_WIDTH - 150, 0))
     elif live_count > 3:
@@ -134,15 +137,58 @@ def update_lives(live_count):
     elif live_count == 1:
         WIN.blit(pygame.image.load('assets/one_heart.png'), (MAX_WIDTH - 150, 0))
     elif live_count < 1:
-        # WIN.blit(pygame.font.SysFont('Consolas', 25).render("U dead", True, RED), (MAX_WIDTH - 100, 0))
-        largeText = pygame.font.Font("freesansbold.ttf", 46)
-        TextSurf, TextRect = text_objects('U dead', largeText)
-        TextRect.center = ((MAX_WIDTH / 2), (MAX_HEIGHT / 2))
-        WIN.blit(TextSurf, TextRect)
+        large_text = pygame.font.Font("freesansbold.ttf", 46)
+        text_surf, text_rect = text_objects('U dead', large_text)
+        text_rect.center = ((MAX_WIDTH / 2), (MAX_HEIGHT / 2))
+        WIN.blit(text_surf, text_rect)
         pygame.display.update()
         time.sleep(2)
         # game_loop()
         pygame.quit()
+
+
+def evaluate_object(object):
+    global live_count, score_count
+    if object.type == Type.MINUS_HEART:
+        pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
+        live_count = live_count - 1
+    elif object.type == Type.HEART:
+        pygame.mixer.Sound('assets/good-6081.wav').play()
+        live_count = live_count + 1
+    elif object.type == Type.MINUS_TEN_POINTS:
+        pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
+        if score_count <= 10:
+            score_count = 0
+        else:
+            score_count = score_count - 10
+    elif object.type == Type.TEN_POINTS:
+        pygame.mixer.Sound('assets/good-6081.wav').play()
+        score_count = score_count + 10
+    elif player_platform.color == object.color:
+        pygame.mixer.Sound('assets/correct-choice-43861.wav').play()
+        score_count = score_count + 1
+        print(score_count)
+    else:
+        pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
+        live_count = live_count - 1
+
+
+def check_detection(object):
+    return abs(object.coord_y - player_platform.coord_y) < 40 and abs(
+        player_platform.coord_x - object.coord_x) < 40
+
+
+def reset_timer():
+    global time_stamp, time_delta
+    pygame.mixer.Sound('assets/start-13691.wav').play()
+    time_stamp = round(time.time() * 1000)
+    time_delta = round(random.randint(4000, 25000))
+    ran_index = random.randint(0, len(images) - 1)
+    player_platform.b_image = images[ran_index][0]
+    player_platform.color = images[ran_index][2]
+
+def time_run_out():
+    return round(time.time() * 1000) - time_delta > time_stamp
 
 
 def main():
@@ -158,8 +204,6 @@ def main():
     clock = pygame.time.Clock()
     run = True
 
-    time_stamp = round(time.time() * 1000)
-    time_delta = round(random.randint(4000, 25000))
     while run:
 
         WIN.fill(WHITE)
@@ -185,47 +229,18 @@ def main():
             object.coord_y += object.speed + 0.005 * score_count
 
             if object.coord_y > MAX_HEIGHT - 10:
-                object.coord_y = -MAX_WIDTH
-                object.coord_x = random.randrange(0, MAX_WIDTH - 25)
-            if abs(object.coord_y - player_platform.coord_y) < 40 and abs(
-                    player_platform.coord_x - object.coord_x) < 40:
-                if object.type == Type.MINUS_HEART:
-                    pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
-                    live_count = live_count - 1
-                elif object.type == Type.HEART:
-                    pygame.mixer.Sound('assets/good-6081.wav').play()
-                    live_count = live_count + 1
-                elif object.type == Type.MINUS_TEN_POINTS:
-                    pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
-                    if score_count <= 10:
-                        score_count = 0
-                    else:
-                        score_count = score_count - 10
-                elif object.type == Type.TEN_POINTS:
-                    pygame.mixer.Sound('assets/good-6081.wav').play()
-                    score_count = score_count + 10
-                elif player_platform.color == object.color:
-                    pygame.mixer.Sound('assets/correct-choice-43861.wav').play()
-                    score_count = score_count + 1
-                    print(score_count)
-                else:
-                    pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
-                    live_count = live_count - 1
-                    object = reassign_object(object)
+                object = reassign_object(object)
+            if check_detection(object):
+                evaluate_object(object)
+                print(object.type, object.color)
+                object = reassign_object(object)
+                print(object.type, object.color)
 
-                object.coord_y = random.randint(-1500, -350)
-                object.coord_x = random.randrange(0, MAX_WIDTH - 25)
+        if time_run_out():
+            reset_timer()
 
-        if round(time.time() * 1000) - time_delta > time_stamp:
-            pygame.mixer.Sound('assets/start-13691.wav').play()
-            time_stamp = round(time.time() * 1000)
-            time_delta = round(random.randint(4000, 25000))
-            ran_index = random.randint(0, len(images) - 1)
-            player_platform.b_image = images[ran_index][0]
-            player_platform.color = images[ran_index][2]
-
-        update_score(score_count)
-        update_lives(live_count)
+        update_score()
+        update_lives()
         pygame.display.update()
 
 
@@ -236,6 +251,8 @@ def reassign_object(object):
     object.b_image = objects_1[ran_index][0]
     object.color = objects_1[ran_index][2]
     object.type = objects_1[ran_index][1]
+    object.coord_y = random.randint(-(MAX_HEIGHT * 2), -350)
+    object.coord_x = random.randrange(0, MAX_WIDTH - 25)
 
     return object
 
