@@ -211,7 +211,7 @@ def main():
                 else:
                     pygame.mixer.Sound('assets/wrong-buzzer-6268.wav').play()
                     live_count = live_count - 1
-                    object = reassign_object(object, objects_1)
+                    object = reassign_object(object)
 
                 object.coord_y = random.randint(-1500, -350)
                 object.coord_x = random.randrange(0, MAX_WIDTH - 25)
@@ -229,7 +229,7 @@ def main():
         pygame.display.update()
 
 
-def reassign_object(object, objects_1):
+def reassign_object(object):
     ran_index = random.randint(0, len(objects_1) - 1)
     object.coord_y = random.randint(-1500, -350)
     object.coord_x = random.randrange(0, MAX_WIDTH - 25)
