@@ -1,4 +1,3 @@
-import math
 import random
 import time
 from enum import Enum
@@ -6,7 +5,7 @@ from enum import Enum
 import pygame
 
 
-class GameObject():
+class GameObject:
     def __init__(self, b_image, speed, coord_x, coord_y, hitbox_x, hitbox_y, type, color):
         self.b_image = b_image
         self.speed = speed
@@ -16,6 +15,26 @@ class GameObject():
         self.hitbox_y = hitbox_y
         self.type = type
         self.color = color
+
+
+class Button:
+    def __init__(self, x, y, x_act, y_act):
+        global player_name
+        mouse_pos = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        picture_active = pygame.image.load('assets/lets_go_active.png')
+        picture_active = pygame.transform.scale(picture_active, (150, 75))
+
+        picture_normal = pygame.image.load('assets/lets_go.png')
+        picture_normal = pygame.transform.scale(picture_normal, (150, 75))
+
+        if x + picture_normal.get_width() > mouse_pos[0] > x and y + picture_normal.get_height() > mouse_pos[1] > y:
+            WIN.blit(picture_active, (x_act, y_act))
+            if click[0]:
+                time.sleep(2)
+                main()
+        else:
+            WIN.blit(picture_normal, (x_act, y_act))
 
 
 class Color(Enum):
@@ -47,9 +66,9 @@ MAX_HEIGHT = 750
 MAX_WIDTH = 750
 
 WIN = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT))
+clock = pygame.time.Clock()
 
 pygame.display.set_caption("ColorCatcher")
-
 
 FPS = 60
 VEL = 5
@@ -57,6 +76,8 @@ VEL = 5
 current_movement = False
 
 live_count = 3
+
+player_name = None
 
 objects_1 = [(pygame.image.load('assets/red_star.png'), Type.STAR, Color.RED),
              (pygame.image.load('assets/yellow_star.png'), Type.STAR, Color.YELLOW),
@@ -101,6 +122,27 @@ def update_score():
     WIN.blit(text, (0, 0))
 
 
+def enter_player_name():
+    menu = True
+    global player_name
+
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        while player_name is None:
+            player_name = input('Input please')
+
+        WIN.fill(WHITE)
+        title_text = WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
+
+        start_button = Button(280, 260, 273, 258)
+
+        pygame.display.update()
+        clock.tick(15)
+
+
 def text_objects(text, font):
     text_surface = font.render(text, True, RED)
     return text_surface, text_surface.get_rect()
@@ -122,7 +164,6 @@ def update_lives():
         WIN.blit(text_surf, text_rect)
         pygame.display.update()
         time.sleep(2)
-        # game_loop()
         pygame.quit()
 
 
@@ -185,7 +226,7 @@ def main():
             GameObject(objects_1[ran_index][0], 5, random.randrange(0, MAX_WIDTH - 20),
                        random.randint(-1000, 0), random.randint(0, 50), random.randint(0, 70), objects_1[ran_index][1],
                        objects_1[ran_index][2]))
-    clock = pygame.time.Clock()
+
     run = True
 
     while run:
@@ -256,5 +297,6 @@ def movement_rhombus(object):
     return object
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+enter_player_name()
+# main()
