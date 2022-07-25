@@ -3,6 +3,7 @@ import time
 from enum import Enum
 
 import pygame
+from input_box import InputBox
 
 
 class GameObject:
@@ -18,7 +19,7 @@ class GameObject:
 
 
 class Button:
-    def __init__(self, x, y, x_act, y_act):
+    def __init__(self, x, y):
         global player_name
         mouse_pos = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
@@ -29,12 +30,11 @@ class Button:
         picture_normal = pygame.transform.scale(picture_normal, (150, 75))
 
         if x + picture_normal.get_width() > mouse_pos[0] > x and y + picture_normal.get_height() > mouse_pos[1] > y:
-            WIN.blit(picture_active, (x_act, y_act))
+            WIN.blit(picture_active, (x, y))
             if click[0]:
-                time.sleep(2)
                 main()
         else:
-            WIN.blit(picture_normal, (x_act, y_act))
+            WIN.blit(picture_normal, (x, y))
 
 
 class Color(Enum):
@@ -125,19 +125,24 @@ def update_score():
 def enter_player_name():
     menu = True
     global player_name
+    input_box = InputBox(250, 260, 140, 32)
 
     while menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            player_name = input_box.handle_event(event)
 
-        while player_name is None:
-            player_name = input('Input please')
+        input_box.update()
 
         WIN.fill(WHITE)
+        input_box.draw(WIN)
+
+        pygame.display.flip()
+
         title_text = WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
 
-        start_button = Button(280, 260, 273, 258)
+        start_button = Button(280, 300)
 
         pygame.display.update()
         clock.tick(15)
@@ -297,6 +302,5 @@ def movement_rhombus(object):
     return object
 
 
-# if __name__ == "__main__":
 enter_player_name()
-# main()
+
