@@ -2,8 +2,20 @@ import random
 import time
 from enum import Enum
 
+import srv as srv
+from pymongo import MongoClient
+from config import MONGODB_URL
+
+
 import pygame
 from input_box import InputBox
+
+db_cluster = MongoClient(MONGODB_URL)
+db = db_cluster["UserScores"]
+collection = db["ColorCatcher"]
+
+
+collection.reviews.insert_one({'name': 'Linus', 'score': 50})
 
 
 class GameObject:
