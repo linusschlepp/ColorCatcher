@@ -5,6 +5,7 @@ from enum import Enum
 import srv as srv
 from pymongo import MongoClient
 from config import MONGODB_URL
+# from dnspython import *
 
 
 import pygame
@@ -15,7 +16,7 @@ db = db_cluster["UserScores"]
 collection = db["ColorCatcher"]
 
 
-collection.reviews.insert_one({'name': 'Linus', 'score': 50})
+collection.insert_one({'name': 'Linus', 'score': 50})
 
 
 class GameObject:
