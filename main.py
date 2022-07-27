@@ -2,8 +2,18 @@ import random
 import time
 from enum import Enum
 
+from pymongo import MongoClient
+from config import MONGODB_URL
+
+
+
 import pygame
 from input_box import InputBox
+
+db_cluster = MongoClient(MONGODB_URL)
+db = db_cluster["UserScores"]
+collection = db["ColorCatcher"]
+
 
 
 class GameObject:
@@ -74,7 +84,7 @@ current_movement = False
 
 live_count = 3
 
-player_name = None
+player_name = ""
 
 objects_1 = [(pygame.image.load('assets/red_star.png'), Type.STAR, Color.RED),
              (pygame.image.load('assets/yellow_star.png'), Type.STAR, Color.YELLOW),
@@ -165,13 +175,11 @@ def update_lives():
     elif live_count == 1:
         WIN.blit(pygame.image.load('assets/one_heart.png'), (MAX_WIDTH - 150, 0))
     elif live_count < 1:
-        # large_text = pygame.font.Font("freesansbold.ttf", 46)
-        # text_surf, text_rect = text_objects('U dead', large_text)
-        # text_rect.center = ((MAX_WIDTH / 2), (MAX_HEIGHT / 2))
         picture_inactive = pygame.image.load('assets/retry_inactive.png')
         picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
         picture_active = pygame.image.load('assets/retry_active.png')
         picture_active = pygame.transform.scale(picture_active, (150, 75))
+        db_operations()
         menu = True
         while menu:
             for event in pygame.event.get():
@@ -186,6 +194,15 @@ def update_lives():
                 main()
             pygame.display.update()
             clock.tick(15)
+
+
+def db_operations():
+    # if player_name is not yet registered in the db, insert it
+    if len(list(collection.find({'name': player_name }))) == 0:
+        collection.insert_one({'name': player_name, 'score': score_count})
+    # Only update the player-score if the new score is higher than the previous one
+    elif collection.find_one({'name': player_name })['score'] < score_count:
+        collection.update_one({'name':player_name}, {'$set':{'score': score_count}})
 
 
 def evaluate_object(object):
