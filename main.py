@@ -179,7 +179,11 @@ def update_lives():
         picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
         picture_active = pygame.image.load('assets/retry_active.png')
         picture_active = pygame.transform.scale(picture_active, (150, 75))
+        font = pygame.font.SysFont('Consolas', 25)
+        text_score = font.render("Score:" + str(score_count), True, BLACK) if not is_highscore() else font.render(
+            "Congrats, NEW HIGHSCORE:" + str(score_count), True, RED)
         db_operations()
+
         menu = True
         while menu:
             for event in pygame.event.get():
@@ -188,8 +192,11 @@ def update_lives():
 
             WIN.fill(WHITE)
             pygame.display.flip()
-            WIN.blit(pygame.image.load('assets/you_died.png'), (280, 200))
+            died_image = pygame.image.load('assets/you_died.png')
+            WIN.blit(died_image, died_image.get_rect(center=(MAX_WIDTH/2, 160)))
             retry_button = Button(280, 240, picture_active, picture_inactive)
+            # WIN.blit(text_score, (280, 200))
+            WIN.blit(text_score, text_score.get_rect(center=(MAX_WIDTH/2, 210)))
             if retry_button.check:
                 main()
             pygame.display.update()
@@ -203,6 +210,12 @@ def db_operations():
     # Only update the player-score if the new score is higher than the previous one
     elif collection.find_one({'name': player_name })['score'] < score_count:
         collection.update_one({'name':player_name}, {'$set':{'score': score_count}})
+
+def is_highscore():
+    try:
+        return collection.find_one({'name': player_name})['score'] < score_count
+    except TypeError:
+        return True
 
 
 def evaluate_object(object):
