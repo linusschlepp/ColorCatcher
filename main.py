@@ -19,22 +19,19 @@ class GameObject:
 
 
 class Button:
-    def __init__(self, x, y):
+    def __init__(self, x, y, picture_active, picture_inactive):
+
         global player_name
         mouse_pos = pygame.mouse.get_pos()
+        self.check = False
         click = pygame.mouse.get_pressed()
-        picture_active = pygame.image.load('assets/lets_go_active.png')
-        picture_active = pygame.transform.scale(picture_active, (150, 75))
 
-        picture_normal = pygame.image.load('assets/lets_go.png')
-        picture_normal = pygame.transform.scale(picture_normal, (150, 75))
-
-        if x + picture_normal.get_width() > mouse_pos[0] > x and y + picture_normal.get_height() > mouse_pos[1] > y:
+        if x + picture_inactive.get_width() > mouse_pos[0] > x and y + picture_inactive.get_height() > mouse_pos[1] > y:
             WIN.blit(picture_active, (x, y))
             if click[0]:
-                main()
+                self.check = True
         else:
-            WIN.blit(picture_normal, (x, y))
+            WIN.blit(picture_inactive, (x, y))
 
 
 class Color(Enum):
@@ -126,6 +123,10 @@ def enter_player_name():
     menu = True
     global player_name
     input_box = InputBox(250, 260, 140, 32)
+    picture_inactive = pygame.image.load('assets/lets_go.png')
+    picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
+    picture_active = pygame.image.load('assets/lets_go_active.png')
+    picture_active = pygame.transform.scale(picture_active, (150, 75))
 
     while menu:
         for event in pygame.event.get():
@@ -140,9 +141,10 @@ def enter_player_name():
 
         pygame.display.flip()
 
-        title_text = WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
-
-        start_button = Button(280, 300)
+        WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
+        start_button = Button(280, 300, picture_active, picture_inactive)
+        if start_button.check:
+            main()
 
         pygame.display.update()
         clock.tick(15)
@@ -163,13 +165,27 @@ def update_lives():
     elif live_count == 1:
         WIN.blit(pygame.image.load('assets/one_heart.png'), (MAX_WIDTH - 150, 0))
     elif live_count < 1:
-        large_text = pygame.font.Font("freesansbold.ttf", 46)
-        text_surf, text_rect = text_objects('U dead', large_text)
-        text_rect.center = ((MAX_WIDTH / 2), (MAX_HEIGHT / 2))
-        WIN.blit(text_surf, text_rect)
-        pygame.display.update()
-        time.sleep(2)
-        pygame.quit()
+        # large_text = pygame.font.Font("freesansbold.ttf", 46)
+        # text_surf, text_rect = text_objects('U dead', large_text)
+        # text_rect.center = ((MAX_WIDTH / 2), (MAX_HEIGHT / 2))
+        picture_inactive = pygame.image.load('assets/retry_inactive.png')
+        picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
+        picture_active = pygame.image.load('assets/retry_active.png')
+        picture_active = pygame.transform.scale(picture_active, (150, 75))
+        menu = True
+        while menu:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+
+            WIN.fill(WHITE)
+            pygame.display.flip()
+            WIN.blit(pygame.image.load('assets/you_died.png'), (280, 200))
+            retry_button = Button(280, 240, picture_active, picture_inactive)
+            if retry_button.check:
+                main()
+            pygame.display.update()
+            clock.tick(15)
 
 
 def evaluate_object(object):
@@ -224,6 +240,8 @@ def time_run_out():
 def main():
     global score_count, live_count
     objects = []
+    live_count = 3
+    score_count = 0
 
     for number in range(0, 40):
         ran_index = random.randint(0, len(objects_1) - 1)
@@ -303,4 +321,3 @@ def movement_rhombus(object):
 
 
 enter_player_name()
-
