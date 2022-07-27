@@ -1,11 +1,10 @@
 import random
 import time
 from enum import Enum
+from operator import itemgetter
 
 from pymongo import MongoClient
 from config import MONGODB_URL
-
-
 
 import pygame
 from input_box import InputBox
@@ -13,7 +12,6 @@ from input_box import InputBox
 db_cluster = MongoClient(MONGODB_URL)
 db = db_cluster["UserScores"]
 collection = db["ColorCatcher"]
-
 
 
 class GameObject:
@@ -133,10 +131,14 @@ def enter_player_name():
     menu = True
     global player_name
     input_box = InputBox(250, 260, 140, 32)
-    picture_inactive = pygame.image.load('assets/lets_go.png')
-    picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
-    picture_active = pygame.image.load('assets/lets_go_active.png')
-    picture_active = pygame.transform.scale(picture_active, (150, 75))
+    picture_start_inactive = pygame.image.load('assets/lets_go.png')
+    picture_start_inactive = pygame.transform.scale(picture_start_inactive, (150, 75))
+    picture_start_active = pygame.image.load('assets/lets_go_active.png')
+    picture_start_active = pygame.transform.scale(picture_start_active, (150, 75))
+    picture_dashboard_active = pygame.image.load('assets/dashboard_active.png')
+    picture_dashboard_active = pygame.transform.scale(picture_dashboard_active, (150, 75))
+    picture_dashboard_inactive = pygame.image.load('assets/dashboard_inactive.png')
+    picture_dashboard_inactive = pygame.transform.scale(picture_dashboard_inactive, (150, 75))
 
     while menu:
         for event in pygame.event.get():
@@ -152,9 +154,12 @@ def enter_player_name():
         pygame.display.flip()
 
         WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
-        start_button = Button(280, 300, picture_active, picture_inactive)
+        start_button = Button(280, 300, picture_start_active, picture_start_inactive)
+        check_score_button = Button(280, 400, picture_dashboard_active, picture_dashboard_inactive)
         if start_button.check:
             main()
+        if check_score_button.check:
+            list_score()
 
         pygame.display.update()
         clock.tick(15)
@@ -163,6 +168,36 @@ def enter_player_name():
 def text_objects(text, font):
     text_surface = font.render(text, True, RED)
     return text_surface, text_surface.get_rect()
+
+
+def list_score():
+    users = list(collection.find({}))
+    menu = True
+    users = sorted(users, key=itemgetter('score'), reverse=True)
+    picture_go_back_active = pygame.image.load('assets/go_back_active.png')
+    picture_go_back_active = pygame.transform.scale(picture_go_back_active, (50, 25))
+    picture_go_back_inactive = pygame.image.load('assets/go_back_inactive.png')
+    picture_go_back_inactive = pygame.transform.scale(picture_go_back_inactive, (50, 25))
+
+    font = pygame.font.SysFont('Consolas', 10)
+
+    while menu:
+        start_y = 150
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        WIN.fill(WHITE)
+
+        go_back_button = Button(0, 0, picture_go_back_active, picture_go_back_inactive)
+        for user in users:
+            WIN.blit(font.render(user['name'] + " " + str(user['score']), True, BLACK), (MAX_WIDTH / 2, start_y))
+            start_y = start_y + 20
+
+        if go_back_button.check:
+            enter_player_name()
+
+        pygame.display.update()
+        clock.tick(15)
 
 
 def update_lives():
@@ -193,10 +228,10 @@ def update_lives():
             WIN.fill(WHITE)
             pygame.display.flip()
             died_image = pygame.image.load('assets/you_died.png')
-            WIN.blit(died_image, died_image.get_rect(center=(MAX_WIDTH/2, 160)))
+            WIN.blit(died_image, died_image.get_rect(center=(MAX_WIDTH / 2, 160)))
             retry_button = Button(280, 240, picture_active, picture_inactive)
             # WIN.blit(text_score, (280, 200))
-            WIN.blit(text_score, text_score.get_rect(center=(MAX_WIDTH/2, 210)))
+            WIN.blit(text_score, text_score.get_rect(center=(MAX_WIDTH / 2, 210)))
             if retry_button.check:
                 main()
             pygame.display.update()
@@ -205,11 +240,12 @@ def update_lives():
 
 def db_operations():
     # if player_name is not yet registered in the db, insert it
-    if len(list(collection.find({'name': player_name }))) == 0:
+    if len(list(collection.find({'name': player_name}))) == 0:
         collection.insert_one({'name': player_name, 'score': score_count})
     # Only update the player-score if the new score is higher than the previous one
-    elif collection.find_one({'name': player_name })['score'] < score_count:
-        collection.update_one({'name':player_name}, {'$set':{'score': score_count}})
+    elif collection.find_one({'name': player_name})['score'] < score_count:
+        collection.update_one({'name': player_name}, {'$set': {'score': score_count}})
+
 
 def is_highscore():
     try:
