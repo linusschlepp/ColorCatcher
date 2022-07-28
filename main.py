@@ -139,6 +139,8 @@ def enter_player_name():
     picture_dashboard_active = pygame.transform.scale(picture_dashboard_active, (150, 75))
     picture_dashboard_inactive = pygame.image.load('assets/dashboard_inactive.png')
     picture_dashboard_inactive = pygame.transform.scale(picture_dashboard_inactive, (150, 75))
+    show_error_text = False
+
 
     while menu:
         for event in pygame.event.get():
@@ -157,9 +159,18 @@ def enter_player_name():
         start_button = Button(280, 300, picture_start_active, picture_start_inactive)
         check_score_button = Button(280, 400, picture_dashboard_active, picture_dashboard_inactive)
         if start_button.check:
-            main()
+            if len(player_name) < 4:
+                show_error_text = True
+            else:
+                main()
         if check_score_button.check:
             list_score()
+
+        if show_error_text:
+            WIN.blit(
+                pygame.font.SysFont('Consolas', 15).render("Your name needs to have at least 4 characters", True, RED),
+                (200, 490))
+
 
         pygame.display.update()
         clock.tick(15)
@@ -189,8 +200,8 @@ def list_score():
         WIN.fill(WHITE)
 
         go_back_button = Button(0, 0, picture_go_back_active, picture_go_back_inactive)
-        for user in users:
-            WIN.blit(font.render(user['name'] + " " + str(user['score']), True, BLACK), (MAX_WIDTH / 2, start_y))
+        for index, user in enumerate(users):
+            WIN.blit(font.render(str(index+1)+". "+user['name'] + " " + str(user['score']), True, BLACK), (MAX_WIDTH / 2, start_y))
             start_y = start_y + 20
 
         if go_back_button.check:
