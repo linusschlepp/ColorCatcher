@@ -42,6 +42,8 @@ class Button:
             WIN.blit(picture_inactive, (x, y))
 
 
+
+
 class Color(Enum):
     RED = 1
     GREEN = 2
@@ -140,6 +142,8 @@ def enter_player_name():
     picture_dashboard_inactive = pygame.image.load('assets/dashboard_inactive.png')
     picture_dashboard_inactive = pygame.transform.scale(picture_dashboard_inactive, (150, 75))
     show_error_text = False
+    player_name = ""
+
 
 
     while menu:
@@ -158,6 +162,7 @@ def enter_player_name():
         WIN.blit(pygame.image.load('assets/enter_name.png'), (MAX_WIDTH / 5, MAX_HEIGHT / 5))
         start_button = Button(280, 300, picture_start_active, picture_start_inactive)
         check_score_button = Button(280, 400, picture_dashboard_active, picture_dashboard_inactive)
+        print(start_button.check)
         if start_button.check:
             if len(player_name) < 4:
                 show_error_text = True
@@ -166,11 +171,11 @@ def enter_player_name():
         if check_score_button.check:
             list_score()
 
+
         if show_error_text:
             WIN.blit(
                 pygame.font.SysFont('Consolas', 15).render("Your name needs to have at least 4 characters", True, RED),
                 (200, 490))
-
 
         pygame.display.update()
         clock.tick(15)
@@ -201,7 +206,8 @@ def list_score():
 
         go_back_button = Button(0, 0, picture_go_back_active, picture_go_back_inactive)
         for index, user in enumerate(users):
-            WIN.blit(font.render(str(index+1)+". "+user['name'] + " " + str(user['score']), True, BLACK), (MAX_WIDTH / 2, start_y))
+            WIN.blit(font.render(str(index + 1) + ". " + user['name'] + " " + str(user['score']), True, BLACK),
+                     (MAX_WIDTH / 2, start_y))
             start_y = start_y + 20
 
         if go_back_button.check:
@@ -225,6 +231,10 @@ def update_lives():
         picture_inactive = pygame.transform.scale(picture_inactive, (150, 75))
         picture_active = pygame.image.load('assets/retry_active.png')
         picture_active = pygame.transform.scale(picture_active, (150, 75))
+        picture_dashboard_inactive = pygame.image.load('assets/go_main_menu_inactive.png')
+        picture_dashboard_inactive = pygame.transform.scale(picture_dashboard_inactive, (200, 75))
+        picture_dashboard_active = pygame.image.load('assets/go_main_menu_active.png')
+        picture_dashboard_active = pygame.transform.scale(picture_dashboard_active, (200, 75))
         font = pygame.font.SysFont('Consolas', 25)
         text_score = font.render("Score:" + str(score_count), True, BLACK) if not is_highscore() else font.render(
             "Congrats, NEW HIGHSCORE:" + str(score_count), True, RED)
@@ -241,10 +251,14 @@ def update_lives():
             died_image = pygame.image.load('assets/you_died.png')
             WIN.blit(died_image, died_image.get_rect(center=(MAX_WIDTH / 2, 160)))
             retry_button = Button(280, 240, picture_active, picture_inactive)
+            main_menu_button = Button(280, 320, picture_dashboard_active, picture_dashboard_inactive)
+
             # WIN.blit(text_score, (280, 200))
             WIN.blit(text_score, text_score.get_rect(center=(MAX_WIDTH / 2, 210)))
             if retry_button.check:
                 main()
+            if main_menu_button.check:
+                enter_player_name()
             pygame.display.update()
             clock.tick(15)
 
