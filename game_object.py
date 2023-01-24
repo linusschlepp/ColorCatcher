@@ -4,7 +4,7 @@ class GameObject:
         self.speed = speed
         self.coord_x = coord_x
         self.coord_y = coord_y
-        self.hitbox_x = hit_box_x
-        self.hitbox_y = hit_box_y
+        self.hit_box_x = hit_box_x
+        self.hit_box_y = hit_box_y
         self.type = enemy_type
         self.color = enemy_color

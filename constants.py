@@ -31,6 +31,9 @@ MAIN_MENU_ACTIVE = 'assets/images/go_main_menu_active.png'
 
 MAIN_MENU_INACTIVE = 'assets/images/go_main_menu_inactive.png'
 
+NAME_DATA_BASE = 'colorCatcher.db'
+
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)

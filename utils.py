@@ -47,7 +47,6 @@ def handle_movement_player(keys_pressed, player_platform):
 
 
 def movement_rhombus(rhombus_object, current_movement):
-    #global current_movement
     if rhombus_object.coord_x > constants.MAX_WIDTH:
         rhombus_object.coord_x = constants.MAX_WIDTH
         current_movement = False
@@ -63,8 +62,7 @@ def movement_rhombus(rhombus_object, current_movement):
     return rhombus_object, current_movement
 
 
-def reset_timer(time_stamp, time_delta, player_platform):
-    #global time_stamp, time_delta
+def reset_timer(player_platform):
     pygame.mixer.Sound(constants.START_SOUND).play()
     time_stamp = round(time.time() * 1000)
     time_delta = round(random.randint(4000, 25000))
@@ -86,17 +84,4 @@ def create_enemies():
 
     return enemies
 
-def db_operations(collection, player_name, score_count):
-    # player_name is not yet registered in the db, insert it
-    if len(list(collection.find({'name': player_name}))) == 0:
-        collection.insert_one({'name': player_name, 'score': score_count})
-    # Only update the player-score if the new score is higher than the previous one
-    elif collection.find_one({'name': player_name})['score'] < score_count:
-        collection.update_one({'name': player_name}, {'$set': {'score': score_count}})
 
-
-def is_high_score(collection, player_name, score_count):
-    try:
-        return collection.find_one({'name': player_name})['score'] < score_count
-    except TypeError:
-        return True
