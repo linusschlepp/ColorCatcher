@@ -2,26 +2,14 @@ import random
 import time
 
 import button
+import db_operations
 import utils
-from color import Color
 from type import Type
-from operator import itemgetter
 import constants
-from pymongo import MongoClient
-from config import MONGODB_URL
 from game_object import GameObject
-import dns.resolver
-
-# dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
-# dns.resolver.default_resolver.nameservers = ['8.8.8.8']
 import pygame
 from input_box import InputBox
 
-db_cluster = MongoClient(MONGODB_URL)
-# Name of cluster
-db = db_cluster['test']
-# Name of collection
-collection = db['Cluster0']
 
 pygame.init()
 
@@ -40,6 +28,8 @@ player_platform = GameObject(constants.IMAGES[ran_index][0], 4, random.randrange
 time_stamp = round(time.time() * 1000)
 time_delta = round(random.randint(4000, 25000))
 
+# Sets up database if not already initialized
+db_operations.set_up_db()
 
 def enter_player_name():
     global player_name
@@ -66,6 +56,7 @@ def enter_player_name():
             if len(player_name) < 4:
                 show_error_text = True
             else:
+                db_operations.add_new_player(player_name)
                 start_game()
         if check_score_button.check:
             list_score()
@@ -79,9 +70,9 @@ def enter_player_name():
 
 
 def list_score():
-    users = collection.find({})
     menu = True
-    #users = sorted(users, key=itemgetter('score'), reverse=True)
+    players = db_operations.fetch_data()
+    players.sort(key = lambda p: p[1], reverse=True)
 
     font = pygame.font.SysFont('Consolas', 10)
 
@@ -93,8 +84,8 @@ def list_score():
         WIN.fill(constants.WHITE)
 
         go_back_button = button.Button(0, 0, constants.IMAGE_GO_BACK_ACTIVE, constants.IMAGE_GO_BACK_INACTIVE, WIN)
-        for index, user in enumerate(users):
-            WIN.blit(font.render('{}. {} {}'.format(str(index + 1), user['name'], str(user['score'])), True,
+        for index, player in enumerate(players):
+            WIN.blit(font.render('{}. {} {}'.format(str(index + 1), player[0], str(player[1])), True,
                                  constants.BLACK),
                      (constants.MAX_WIDTH / 2, start_y))
             start_y += 20
@@ -123,12 +114,11 @@ def update_lives() -> None:
 
 
 def restart_game():
-    #TODO: Uncomment this stuff
     font = pygame.font.SysFont('Consolas', 25)
-    # text_score = font.render('Score: {}'.format(str(score_count)), True,
-    #                          constants.BLACK) if not utils.is_high_score(collection, player_name, score_count) else font.render(
-    #     'Congrats, NEW HIGHSCORE: {}'.format(score_count), True, constants.RED)
-   # utils.db_operations(collection, player_name, score_count)
+    text_score = font.render('Score: {}'.format(str(score_count)), True,
+                             constants.BLACK) if db_operations.is_high_score(player_name, score_count) == '' \
+        else font.render(db_operations.is_high_score(player_name, score_count), True, constants.RED)
+    db_operations.check_scores(player_name, score_count)
 
     menu = True
     while menu:
@@ -143,7 +133,7 @@ def restart_game():
         retry_button = button.Button(280, 240, constants.IMAGE_ACTIVE, constants.IMAGE_INACTIVE, WIN)
         main_menu_button = button.Button(280, 320, constants.IMAGE_DASHBOARD_ACTIVE,
                                          constants.IMAGE_DASHBOARD_INACTIVE, WIN)
-       # WIN.blit(text_score, text_score.get_rect(center=(constants.MAX_WIDTH / 2, 210)))
+        WIN.blit(text_score, text_score.get_rect(center=(constants.MAX_WIDTH / 2, 210)))
         if retry_button.check:
             start_game()
         if main_menu_button.check:
@@ -220,7 +210,7 @@ def start_game():
 
         if utils.time_run_out(time_delta, time_stamp):
             time_stamp, time_delta, player_platform = \
-                utils.reset_timer(time_stamp, time_delta, player_platform)
+                utils.reset_timer(player_platform)
 
         utils.update_score(WIN, score_count)
         update_lives()
