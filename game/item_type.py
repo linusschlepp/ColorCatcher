@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class Type(Enum):
+    """
+    Class representing item-type
+    """
     STAR = 1
     RHOMBUS = 2
     SQUARE = 3

@@ -139,7 +139,7 @@ def fetch_high_score() -> int:
 
 def player_exists(player_name: str) -> bool:
     """
-    Checks if for given player name if it exists within database
+    Checks if given player name exists within database
 
     :param player_name: Name of player to be searched
     :return: True if player exists within database. False if not
