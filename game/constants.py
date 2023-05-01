@@ -1,7 +1,8 @@
 import pygame
 
 from color import Color
-from type import Type
+from item_type import Type
+from PIL import Image
 
 MINUS_POINTS_SOUND = 'assets/sounds/minus_points.wav'
 
@@ -21,8 +22,6 @@ IMAGE_TWO_HEART = 'assets/images/two_hearts.png'
 
 IMAGE_YOU_DIED = 'assets/images/you_died.png'
 
-IMAGE_RETRY_INACTIVE = 'assets/images/retry_inactive.png'
-
 IMAGE_ENTER_NAME = 'assets/images/enter_name.png'
 
 IMAGE_RETRY_ACTIVE = 'assets/images/retry_active.png'
@@ -31,8 +30,9 @@ MAIN_MENU_ACTIVE = 'assets/images/go_main_menu_active.png'
 
 MAIN_MENU_INACTIVE = 'assets/images/go_main_menu_inactive.png'
 
-NAME_DATA_BASE = 'colorCatcher.db'
+IMAGE_RETRY_INACTIVE = 'assets/images/retry_inactive.png'
 
+NAME_DATA_BASE = 'colorCatcher.db'
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -49,23 +49,20 @@ current_movement = False
 
 live_count = 3
 
-GAME_OBJECTS = [(pygame.image.load('assets/images/red_star.png'), Type.STAR, Color.RED),
-                (pygame.image.load('assets/images/yellow_star.png'), Type.STAR, Color.YELLOW),
-                (pygame.image.load('assets/images/green_star.png'), Type.STAR, Color.GREEN),
-                (pygame.image.load('assets/images/red_rhombus.png'), Type.RHOMBUS, Color.RED),
-                (pygame.image.load('assets/images/green_rhombus.png'), Type.RHOMBUS, Color.GREEN),
-                (pygame.image.load('assets/images/yellow_rhombus.png'), Type.RHOMBUS, Color.YELLOW),
-                (pygame.image.load('assets/images/red_square.png'), Type.SQUARE, Color.RED),
-                (pygame.image.load('assets/images/green_square.png'), Type.SQUARE, Color.GREEN),
-                (pygame.image.load('assets/images/yellow_square.png'), Type.SQUARE, Color.YELLOW),
-                (pygame.image.load('assets/images/one_heart.png'), Type.HEART, Color.RED),
-                (pygame.image.load('assets/images/ten_points.png'), Type.TEN_POINTS, Color.RED),
-                (pygame.image.load('assets/images/minus_ten_points.png'), Type.MINUS_TEN_POINTS, Color.RED),
-                (pygame.image.load('assets/images/minus_heart.png'), Type.MINUS_HEART, Color.RED)]
 
-IMAGES = [(pygame.image.load('assets/images/player_platform_yellow.png'), Type.PLAYER, Color.YELLOW),
-          (pygame.image.load('assets/images/player_platform_red.png'), Type.PLAYER, Color.RED),
-          (pygame.image.load('assets/images/player_platform_green.png'), Type.PLAYER, Color.GREEN)]
+GAME_OBJECTS = [(Image.open('assets/images/star.png'),  Type.STAR),
+                (Image.open('assets/images/rhombus.png'), Type.RHOMBUS),
+                (Image.open('assets/images/square.png'), Type.SQUARE),
+                (Image.open('assets/images/minus_ten_points.png'), Type.MINUS_TEN_POINTS),
+                (Image.open('assets/images/minus_heart.png'), Type.MINUS_HEART)]
+
+# PLAYER_PLATFORMS = [(pygame.image.load('assets/images/player_platform_yellow.png'), Type.PLAYER, Color.YELLOW),
+#                     (pygame.image.load('assets/images/player_platform_red.png'), Type.PLAYER, Color.RED),
+#                     (pygame.image.load('assets/images/player_platform_green.png'), Type.PLAYER, Color.GREEN)]
+PLAYER_PLATFORM = (Image.open('assets/images/player_platform.png'), Type.PLAYER)
+
+# colors and their corresponding rgb values
+COLORS = [((250, 253, 15), Color.YELLOW), ((255, 0, 0), Color.RED), ((0, 255, 0), Color.GREEN)]
 
 IMAGE_GO_BACK_ACTIVE = pygame.image.load('assets/images/go_back_active.png')
 IMAGE_GO_BACK_ACTIVE = pygame.transform.scale(IMAGE_GO_BACK_ACTIVE, (50, 25))
@@ -89,5 +86,3 @@ IMAGE_DASHBOARD_ACTIVE = pygame.image.load('assets/images/dashboard_active.png')
 IMAGE_DASHBOARD_ACTIVE = pygame.transform.scale(IMAGE_DASHBOARD_ACTIVE, (150, 75))
 IMAGE_DASHBOARD_INACTIVE = pygame.image.load('assets/images/dashboard_inactive.png')
 IMAGE_DASHBOARD_INACTIVE = pygame.transform.scale(IMAGE_DASHBOARD_INACTIVE, (150, 75))
-
-
