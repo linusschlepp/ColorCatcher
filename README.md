@@ -18,4 +18,4 @@ the objects have different movement patterns and the falling speed of those obje
 * [sqlite](https://sqlite.org/index.html)
 
 ## Setup
-To use this project, clone it, by running this command in your terminal/cmd: `git clone https://github.com/linusschlepp/K1vv1_IDE.git`.
+To use this project, clone it, by running this command in your terminal/cmd: `git clone https://github.com/linusschlepp/ColorCatcher.git`.
