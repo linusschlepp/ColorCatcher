@@ -1,6 +1,6 @@
 ## ColorCatcher
 
-![image](https://user-images.githubusercontent.com/82322027/161435302-2d03e740-890c-4100-aa58-e4b13470271c.png)
+![image](https://github.com/linusschlepp/ColorCatcher/blob/6ccfd4e7a401848f0762f587d5e42736d5d3ce14/assets/images/sample_img_readme.png)
 
 ### Watch out its raining colored stars, rhombuses and rectangles!! 
 
