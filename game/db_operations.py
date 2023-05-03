@@ -1,9 +1,9 @@
 import sqlite3
 from sqlite3 import Error
 from pathlib import Path
-import constants
+import game_constants
 
-conn = sqlite3.connect(constants.NAME_DATA_BASE)
+conn = sqlite3.connect(game_constants.NAME_DATA_BASE)
 cursor = conn.cursor()
 
 
@@ -13,7 +13,7 @@ def create_connection():
     """
     conn = None
     try:
-        conn = sqlite3.connect(constants.NAME_DATA_BASE)
+        conn = sqlite3.connect(game_constants.NAME_DATA_BASE)
     except Error as e:
         print(e)
     finally:
@@ -27,7 +27,7 @@ def connection_exists() -> Path:
 
     :return: Path corresponding to location of database. If database does not exist, None is returned
     """
-    return Path(constants.NAME_DATA_BASE)
+    return Path(game_constants.NAME_DATA_BASE)
 
 
 def create_table() -> None:
