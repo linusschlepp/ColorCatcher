@@ -52,9 +52,9 @@ LETS_GO_INACTIVE_IMAGE_PATH = 'assets/images/lets_go.png'
 
 LETS_GO_ACTIVE_IMAGE_PATH = 'assets/images/lets_go_active.png'
 
-DASHBOARD_ACTIVE_IMAGE_PATH = 'assets/images/dashboard_active.png'
+SCORE_LIST_ACTIVE_IMAGE_PATH = 'assets/images/score_list_active.png'
 
-DASHBOARD_INACTIVE_IMAGE_PATH = 'assets/images/dashboard_inactive.png'
+SCORE_LIST_INACTIVE_IMAGE_PATH = 'assets/images/score_list_inactive.png'
 
 NAME_DATA_BASE = 'colorCatcher.db'
 
@@ -76,7 +76,8 @@ GAME_OBJECTS = [(Image.open(STAR_IMAGE_PATH), Type.STAR),
                 (Image.open(RHOMBUS_IMAGE_PATH), Type.RHOMBUS),
                 (Image.open(SQUARE_IMAGE_PATH), Type.SQUARE),
                 (Image.open(MINUS_POINTS_IMAGE_PATH), Type.MINUS_TEN_POINTS),
-                (Image.open(MINUS_HEART_IMAGE_PATH), Type.MINUS_HEART)]
+                (Image.open(MINUS_HEART_IMAGE_PATH), Type.MINUS_HEART),
+                (Image.open(ONE_HEART_IMAGE_PATH), Type.HEART)]
 
 PLAYER_PLATFORM = (Image.open(PLAYER_PLATFORM_IMAGE_PATH), Type.PLAYER)
 
@@ -86,12 +87,12 @@ COLORS = [((250, 253, 15), Color.YELLOW), ((255, 0, 0), Color.RED), ((0, 255, 0)
 IMAGE_GO_BACK_ACTIVE = pygame.transform.scale(pygame.image.load(GO_BACK_ACTIVE_IMAGE_PATH), (50, 25))
 IMAGE_GO_BACK_INACTIVE = pygame.transform.scale(pygame.image.load(GO_BACK_INACTIVE_IMAGE_PATH), (50, 25))
 
-IMAGE_INACTIVE = pygame.transform.scale(pygame.image.load(RETRY_INACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_ACTIVE = pygame.transform.scale(pygame.image.load(RETRY_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_DASHBOARD_INACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_INACTIVE_IMAGE_PATH), (200, 75))
-IMAGE_DASHBOARD_ACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_ACTIVE_IMAGE_PATH), (200, 75))
+IMAGE_RETRY_INACTIVE = pygame.transform.scale(pygame.image.load(RETRY_INACTIVE_IMAGE_PATH), (150, 75))
+IMAGE_RETRY_ACTIVE = pygame.transform.scale(pygame.image.load(RETRY_ACTIVE_IMAGE_PATH), (150, 75))
+IMAGE_MAIN_MENU_INACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_INACTIVE_IMAGE_PATH), (200, 75))
+IMAGE_MAIN_MENU_ACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_ACTIVE_IMAGE_PATH), (200, 75))
 
 IMAGE_START_INACTIVE = pygame.transform.scale(pygame.image.load(LETS_GO_INACTIVE_IMAGE_PATH), (150, 75))
 IMAGE_START_ACTIVE = pygame.transform.scale(pygame.image.load(LETS_GO_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_DASHBOARD_ACTIVE = pygame.transform.scale(pygame.image.load(DASHBOARD_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_DASHBOARD_INACTIVE = pygame.transform.scale(pygame.image.load(DASHBOARD_INACTIVE_IMAGE_PATH), (150, 75))
+IMAGE_LIST_SCORE_ACTIVE = pygame.transform.scale(pygame.image.load(SCORE_LIST_ACTIVE_IMAGE_PATH), (150, 75))
+IMAGE_LIST_SCORE_INACTIVE = pygame.transform.scale(pygame.image.load(SCORE_LIST_INACTIVE_IMAGE_PATH), (150, 75))
