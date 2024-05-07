@@ -94,8 +94,11 @@ def add_new_player(player_name: str) -> None:
     :param player_name: Name of player to be added to the database
     """
     # player_name is not yet registered in the db, insert it
-    if not player_exists(player_name):
-        insert_player(player_name)
+    try:
+        if not player_exists(player_name):
+            insert_player(player_name)
+    except sqlite3.OperationalError:
+        create_table()
 
 
 def check_scores(player_name: str, score_count: int) -> None:
@@ -134,7 +137,7 @@ def fetch_high_score() -> int:
     fetch_max_score_query = "SELECT MAX(score) AS maxScore FROM PLAYERS"
     execute_query(fetch_max_score_query)
     rows = cursor.fetchall()
-    return rows[0][0]
+    return rows[0][0] if type(rows[0][0]) is int else 0
 
 
 def player_exists(player_name: str) -> bool:

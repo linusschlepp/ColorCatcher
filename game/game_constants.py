@@ -24,17 +24,11 @@ YOU_DIED_IMAGE_PATH = 'assets/images/you_died.png'
 
 ENTER_NAME_IMAGE_PATH = 'assets/images/enter_name.png'
 
-RETRY_ACTIVE_IMAGE_PATH = 'assets/images/retry_active.png'
+MAIN_MENU_IMAGE_PATH = 'assets/images/go_main_menu.png'
 
-MAIN_MENU_ACTIVE_IMAGE_PATH = 'assets/images/go_main_menu_active.png'
+RETRY_IMAGE_PATH = 'assets/images/retry.png'
 
-MAIN_MENU_INACTIVE_IMAGE_PATH = 'assets/images/go_main_menu_inactive.png'
-
-RETRY_INACTIVE_IMAGE_PATH = 'assets/images/retry_inactive.png'
-
-GO_BACK_ACTIVE_IMAGE_PATH = 'assets/images/go_back_active.png'
-
-GO_BACK_INACTIVE_IMAGE_PATH = 'assets/images/go_back_inactive.png'
+GO_BACK_IMAGE_PATH = 'assets/images/go_back.png'
 
 STAR_IMAGE_PATH = 'assets/images/star.png'
 
@@ -48,19 +42,20 @@ MINUS_HEART_IMAGE_PATH = 'assets/images/minus_heart.png'
 
 PLAYER_PLATFORM_IMAGE_PATH = 'assets/images/player_platform.png'
 
-LETS_GO_INACTIVE_IMAGE_PATH = 'assets/images/lets_go.png'
+LETS_GO_IMAGE_PATH = 'assets/images/lets_go.png'
 
-LETS_GO_ACTIVE_IMAGE_PATH = 'assets/images/lets_go_active.png'
-
-SCORE_LIST_ACTIVE_IMAGE_PATH = 'assets/images/score_list_active.png'
-
-SCORE_LIST_INACTIVE_IMAGE_PATH = 'assets/images/score_list_inactive.png'
+SCORE_LIST_IMAGE_PATH = 'assets/images/score_list.png'
 
 NAME_DATA_BASE = 'colorCatcher.db'
 
+# Colors used within color catcher
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+ORANGE = (255, 165, 0)
+YELLOW = (250, 253, 15)
+GREEN = (0, 255, 0)
+
 WIDTH = 55
 HEIGHT = 40
 MAX_HEIGHT = 750
@@ -68,6 +63,9 @@ MAX_WIDTH = 750
 
 FPS = 60
 VEL = 5
+
+# Width for buttons
+BUTTON_WIDTH = 280
 
 CURRENT_MOVEMENT = False
 
@@ -81,18 +79,15 @@ GAME_OBJECTS = [(Image.open(STAR_IMAGE_PATH), Type.STAR),
 
 PLAYER_PLATFORM = (Image.open(PLAYER_PLATFORM_IMAGE_PATH), Type.PLAYER)
 
+
+
 # colors and their corresponding rgb values
-COLORS = [((250, 253, 15), Color.YELLOW), ((255, 0, 0), Color.RED), ((0, 255, 0), Color.GREEN)]
+COLORS = [(YELLOW, Color.YELLOW), (RED, Color.RED), (GREEN, Color.GREEN)]
 
-IMAGE_GO_BACK_ACTIVE = pygame.transform.scale(pygame.image.load(GO_BACK_ACTIVE_IMAGE_PATH), (50, 25))
-IMAGE_GO_BACK_INACTIVE = pygame.transform.scale(pygame.image.load(GO_BACK_INACTIVE_IMAGE_PATH), (50, 25))
+IMAGE_GO_BACK = pygame.transform.scale(pygame.image.load(GO_BACK_IMAGE_PATH), (50, 25))
 
-IMAGE_RETRY_INACTIVE = pygame.transform.scale(pygame.image.load(RETRY_INACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_RETRY_ACTIVE = pygame.transform.scale(pygame.image.load(RETRY_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_MAIN_MENU_INACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_INACTIVE_IMAGE_PATH), (200, 75))
-IMAGE_MAIN_MENU_ACTIVE = pygame.transform.scale(pygame.image.load(MAIN_MENU_ACTIVE_IMAGE_PATH), (200, 75))
+IMAGE_RETRY = pygame.transform.scale(pygame.image.load(RETRY_IMAGE_PATH), (150, 75))
+IMAGE_MAIN_MENU = pygame.transform.scale(pygame.image.load(MAIN_MENU_IMAGE_PATH), (200, 75))
 
-IMAGE_START_INACTIVE = pygame.transform.scale(pygame.image.load(LETS_GO_INACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_START_ACTIVE = pygame.transform.scale(pygame.image.load(LETS_GO_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_LIST_SCORE_ACTIVE = pygame.transform.scale(pygame.image.load(SCORE_LIST_ACTIVE_IMAGE_PATH), (150, 75))
-IMAGE_LIST_SCORE_INACTIVE = pygame.transform.scale(pygame.image.load(SCORE_LIST_INACTIVE_IMAGE_PATH), (150, 75))
+IMAGE_GAME_START = pygame.transform.scale(pygame.image.load(LETS_GO_IMAGE_PATH), (150, 75))
+IMAGE_LIST_SCORE = pygame.transform.scale(pygame.image.load(SCORE_LIST_IMAGE_PATH), (150, 75))

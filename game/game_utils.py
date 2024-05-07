@@ -6,6 +6,11 @@ import pygame
 import game_constants
 from game_object import GameObject
 from item_type import Type
+from PIL import Image
+
+# Works as 'cache' for images, with this dict it is possible to safe a lot calc-time for the images
+# If they have already been 'rendered' - they can be simply fetched of the dict
+color_type_dict = {}
 
 
 def update_score(WIN, score_count: int):
@@ -71,7 +76,7 @@ def evaluate_object(game_object: GameObject, player_platform: GameObject, live_c
             score_count = 0
         else:
             score_count -= 10
-    elif game_object.type == Type.TEN_POINTS:
+    elif game_object.type == Type.PLUS_TEN_POINTS:
         pygame.mixer.Sound(game_constants.PLUS_POINTS_SOUND_PATH).play()
         score_count += 10
     elif player_platform.color == game_object.color:
@@ -168,6 +173,7 @@ def create_game_objects() -> list:
     game_objects = []
     for _ in range(0, 40):
         ran_index = random.randint(0, len(game_constants.GAME_OBJECTS) - 1)
+        # get a random color from list of colors - can either be red, yellow or green
         ran_color = game_constants.COLORS[random.randint(0, len(game_constants.COLORS) - 1)][0]
         game_objects.append(
             GameObject(color_image_game_object(game_constants.GAME_OBJECTS[ran_index][0], ran_color,
@@ -189,9 +195,11 @@ def color_image_game_object(game_object_image, color: tuple, type: Type):
     :param type: Type of the given Game-object
     :return: Image of game object with new color
     """
+    if (color, type) in color_type_dict:
+        return color_type_dict.get((color, type))
 
-    # if the type is just an item leave the function
-    if type != Type.RHOMBUS and type != Type.STAR and type != Type.SQUARE and type != Type.PLAYER:
+    if type == Type.MINUS_HEART or type == Type.HEART or type == Type.PLUS_TEN_POINTS or type == Type.MINUS_TEN_POINTS:
+        # if the type is just an item leave the function
         return game_object_image
 
     game_object_image_temp = game_object_image.copy()
@@ -204,6 +212,8 @@ def color_image_game_object(game_object_image, color: tuple, type: Type):
             if current_color != 0:
                 game_object_image_temp.putpixel((x, y), color)
 
+    # Add new object and type combination as key to the dict
+    color_type_dict.setdefault((color, type), game_object_image_temp)
     return game_object_image_temp
 
 
@@ -220,3 +230,15 @@ def convert_image(pil_image) -> pygame.Surface:
     new_img = pygame.image.fromstring(raw_str, pil_image.size, str_format)
 
     return new_img
+
+
+def resize_img(pil_image, width, height):
+    """
+    Resizes image according to given specs
+
+    :param pil_image: Image, which is resized
+    :param width: Width of the resized image
+    :param height: Height of the resized image
+    :return: Resized image
+    """
+    return pil_image.resize((width, height), Image.LANCZOS)
