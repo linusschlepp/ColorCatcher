@@ -1,5 +1,7 @@
 import pygame
 
+from game import game_constants
+
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
 COLOR_INACTIVE = pygame.Color((0, 0, 0))
@@ -44,7 +46,7 @@ class InputBox:
         self.rect.w = width
 
     def draw(self, screen):
-        screen.fill((255, 255, 255))
+        screen.fill(game_constants.WHITE)
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
         # Blit the rect.

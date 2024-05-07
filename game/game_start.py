@@ -1,7 +1,6 @@
 import random
 import time
 
-
 import button
 import db_operations
 import game_utils
@@ -10,6 +9,7 @@ import game_constants
 from game_object import GameObject
 import pygame
 from input_box import InputBox
+from PIL import Image
 
 pygame.init()
 
@@ -22,9 +22,12 @@ current_movement = False
 
 ran_index = random.randint(0, len(game_constants.COLORS) - 1)
 ran_color = game_constants.COLORS[ran_index][0]
-player_platform = GameObject(game_utils.color_image_game_object(game_constants.PLAYER_PLATFORM[0], ran_color, Type.PLAYER), 4, random.randrange(0, game_constants.MAX_WIDTH - 20),
-                             random.randrange(-2000, -1000), 55, 100, game_constants.PLAYER_PLATFORM[1],
-                             ran_color)
+# Initialise platform of the player
+player_platform = GameObject(
+    game_utils.color_image_game_object(game_constants.PLAYER_PLATFORM[0], ran_color, Type.PLAYER), 4,
+    random.randrange(0, game_constants.MAX_WIDTH - 20),
+    random.randrange(-2000, -1000), 55, 100, game_constants.PLAYER_PLATFORM[1],
+    ran_color)
 
 time_stamp = round(time.time() * 1000)
 time_delta = round(random.randint(4000, 25000))
@@ -53,10 +56,14 @@ def enter_player_name() -> None:
         WIN.fill(game_constants.WHITE)
         input_box.draw(WIN)
 
-        WIN.blit(pygame.image.load(game_constants.ENTER_NAME_IMAGE_PATH), (game_constants.MAX_WIDTH / 5, game_constants.MAX_HEIGHT / 5))
-        start_button = button.Button(280, 300, game_constants.IMAGE_START_ACTIVE, game_constants.IMAGE_START_INACTIVE, WIN)
-        check_score_button = button.Button(280, 400, game_constants.IMAGE_LIST_SCORE_ACTIVE,
-                                           game_constants.IMAGE_LIST_SCORE_INACTIVE, WIN)
+        WIN.blit(pygame.image.load(game_constants.ENTER_NAME_IMAGE_PATH),
+                 (game_constants.MAX_WIDTH / 5, game_constants.MAX_HEIGHT / 5))
+        start_button = button.Button(game_constants.BUTTON_WIDTH, 300, game_utils.color_image_game_object(
+            Image.open(game_constants.LETS_GO_IMAGE_PATH), game_constants.ORANGE, Type.BUTTON_GAME_START),
+                                     game_constants.IMAGE_GAME_START, 150, 75, WIN)
+        check_score_button = button.Button(game_constants.BUTTON_WIDTH, 400, game_utils.color_image_game_object(
+            Image.open(game_constants.SCORE_LIST_IMAGE_PATH), game_constants.ORANGE, Type.BUTTON_SCORE_LIST),
+                                           game_constants.IMAGE_LIST_SCORE, 150, 75, WIN)
         if start_button.check:
             if len(player_name) < 4:
                 show_error_text = True
@@ -92,7 +99,9 @@ def list_score() -> None:
                 pygame.quit()
         WIN.fill(game_constants.WHITE)
 
-        go_back_button = button.Button(0, 0, game_constants.IMAGE_GO_BACK_ACTIVE, game_constants.IMAGE_GO_BACK_INACTIVE, WIN)
+        go_back_button = button.Button(0, 0, game_utils.color_image_game_object(
+            Image.open(game_constants.GO_BACK_IMAGE_PATH), game_constants.ORANGE, Type.BUTTON_GO_BACK), game_constants.IMAGE_GO_BACK, 50, 25,
+                                       WIN)
         for index, player in enumerate(players):
             WIN.blit(font.render('{}. {} {}'.format(str(index + 1), player[0], str(player[1])), True,
                                  game_constants.BLACK),
@@ -141,9 +150,12 @@ def restart_game():
         WIN.fill(game_constants.WHITE)
         died_image = pygame.image.load(game_constants.YOU_DIED_IMAGE_PATH)
         WIN.blit(died_image, died_image.get_rect(center=(game_constants.MAX_WIDTH / 2, 160)))
-        retry_button = button.Button(280, 240, game_constants.IMAGE_RETRY_ACTIVE, game_constants.IMAGE_RETRY_INACTIVE, WIN)
-        main_menu_button = button.Button(280, 320, game_constants.IMAGE_MAIN_MENU_ACTIVE,
-                                         game_constants.IMAGE_MAIN_MENU_INACTIVE, WIN)
+        retry_button = button.Button(game_constants.BUTTON_WIDTH, 240, game_utils.color_image_game_object(
+            Image.open(game_constants.RETRY_IMAGE_PATH), game_constants.ORANGE, Type.BUTTON_RETRY), game_constants.IMAGE_RETRY, 150, 75,
+                                     WIN)
+        main_menu_button = button.Button(game_constants.BUTTON_WIDTH, 320, game_utils.color_image_game_object(
+            Image.open(game_constants.MAIN_MENU_IMAGE_PATH), game_constants.ORANGE, Type.BUTTON_MAIN),
+                                         game_constants.IMAGE_MAIN_MENU, 200, 75, WIN)
         WIN.blit(text_score, text_score.get_rect(center=(game_constants.MAX_WIDTH / 2, 210)))
         if retry_button.check:
             start_game()
